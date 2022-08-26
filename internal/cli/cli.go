@@ -18,7 +18,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/piotrszyma/sqlfmt/internal/sql/parser"
+	"github.com/piotrszyma/sqlfmt/internal/sql/sem/tree"
+	// "github.com/piotrszyma/sqlfmt/internal/sql/parser"
 )
 
 // TODO(mjibson): This subcommand has more flags than I would prefer. My
@@ -67,7 +68,7 @@ func RunSQLFmt(sqlfmtCtx SqlfmtCtx) error {
 		return fmt.Errorf("tab width must be > 0: %d", sqlfmtCtx.TabWidth)
 	}
 
-	var sl parser.Statements
+	// var sl parser.Statements
 	// in, err := ioutil.ReadAll(os.Stdin)
 	// if err != nil {
 	// 	return err
@@ -77,15 +78,15 @@ func RunSQLFmt(sqlfmtCtx SqlfmtCtx) error {
 	// 	return err
 	// }
 
-	// cfg := tree.DefaultPrettyCfg()
-	// cfg.UseTabs = !sqlfmtCtx.UseSpaces
-	// cfg.LineWidth = sqlfmtCtx.Len
-	// cfg.TabWidth = sqlfmtCtx.TabWidth
-	// cfg.Simplify = !sqlfmtCtx.NoSimplify
-	// cfg.Align = tree.PrettyNoAlign
-	// if sqlfmtCtx.Align {
-	// 	cfg.Align = tree.PrettyAlignAndDeindent
-	// }
+	cfg := tree.DefaultPrettyCfg()
+	cfg.UseTabs = !sqlfmtCtx.UseSpaces
+	cfg.LineWidth = sqlfmtCtx.Len
+	cfg.TabWidth = sqlfmtCtx.TabWidth
+	cfg.Simplify = !sqlfmtCtx.NoSimplify
+	cfg.Align = tree.PrettyNoAlign
+	if sqlfmtCtx.Align {
+		cfg.Align = tree.PrettyAlignAndDeindent
+	}
 
 	// for i := range sl {
 	// 	fmt.Print(cfg.Pretty(sl[i].AST))
@@ -94,5 +95,6 @@ func RunSQLFmt(sqlfmtCtx SqlfmtCtx) error {
 	// 	}
 	// 	fmt.Println()
 	// }
-	// return nil
+
+	return nil
 }
