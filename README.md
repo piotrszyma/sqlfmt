@@ -1,5 +1,9 @@
 # sqlfmt
 
+TODO:
+- [ ] extract parser
+- [ ] extract pretty printer
+
 ## Reformat SQL
 
 To format `*.sql` files in given directory `/dir` in place, run:
