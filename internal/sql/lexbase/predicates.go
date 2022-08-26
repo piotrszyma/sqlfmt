@@ -41,8 +41,11 @@ func IsHexDigit(ch int) bool {
 // which we need one token of lookahead extra to determine their token type.
 var reservedOrLookaheadKeywords = make(map[string]struct{})
 
+// TODO(pszyma): Figure out what to place here.
+var reservedKeywords = []string{}
+
 func init() {
-	for s := range reservedKeywords {
+	for _, s := range reservedKeywords {
 		reservedOrLookaheadKeywords[s] = struct{}{}
 	}
 	for _, s := range []string{
