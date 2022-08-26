@@ -16,13 +16,9 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
 	"strings"
 
-	"github.com/cockroachdb/cockroach/pkg/sql/parser"
-	"github.com/cockroachdb/cockroach/pkg/sql/sem/tree"
-	"github.com/pkg/errors"
+	"github.com/piotrszyma/sqlfmt/internal/sql/parser"
 )
 
 // TODO(mjibson): This subcommand has more flags than I would prefer. My
@@ -56,58 +52,47 @@ func (s *statementsValue) Set(value string) error {
 // sqlfmtCtx captures the command-line parameters of the `sqlfmt` command.
 // Defaults set by InitCLIDefaults() above.
 type SqlfmtCtx struct {
-	len        int
-	useSpaces  bool
-	tabWidth   int
-	noSimplify bool
-	align      bool
-	execStmts  statementsValue
+	Len        int
+	UseSpaces  bool
+	TabWidth   int
+	NoSimplify bool
+	Align      bool
 }
 
-func runSQLFmt(sqlfmtCtx SqlfmtCtx) error {
-	if sqlfmtCtx.len < 1 {
-		return errors.Errorf("line length must be > 0: %d", sqlfmtCtx.len)
+func RunSQLFmt(sqlfmtCtx SqlfmtCtx) error {
+	if sqlfmtCtx.Len < 1 {
+		return fmt.Errorf("line length must be > 0: %d", sqlfmtCtx.Len)
 	}
-	if sqlfmtCtx.tabWidth < 1 {
-		return errors.Errorf("tab width must be > 0: %d", sqlfmtCtx.tabWidth)
+	if sqlfmtCtx.TabWidth < 1 {
+		return fmt.Errorf("tab width must be > 0: %d", sqlfmtCtx.TabWidth)
 	}
 
 	var sl parser.Statements
-	if len(sqlfmtCtx.execStmts) != 0 {
-		for _, exec := range sqlfmtCtx.execStmts {
-			stmts, err := parser.Parse(exec)
-			if err != nil {
-				return err
-			}
-			sl = append(sl, stmts...)
-		}
-	} else {
-		in, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			return err
-		}
-		sl, err = parser.Parse(string(in))
-		if err != nil {
-			return err
-		}
-	}
+	// in, err := ioutil.ReadAll(os.Stdin)
+	// if err != nil {
+	// 	return err
+	// }
+	// sl, err = parser.Parse(string(in))
+	// if err != nil {
+	// 	return err
+	// }
 
-	cfg := tree.DefaultPrettyCfg()
-	cfg.UseTabs = !sqlfmtCtx.useSpaces
-	cfg.LineWidth = sqlfmtCtx.len
-	cfg.TabWidth = sqlfmtCtx.tabWidth
-	cfg.Simplify = !sqlfmtCtx.noSimplify
-	cfg.Align = tree.PrettyNoAlign
-	if sqlfmtCtx.align {
-		cfg.Align = tree.PrettyAlignAndDeindent
-	}
+	// cfg := tree.DefaultPrettyCfg()
+	// cfg.UseTabs = !sqlfmtCtx.UseSpaces
+	// cfg.LineWidth = sqlfmtCtx.Len
+	// cfg.TabWidth = sqlfmtCtx.TabWidth
+	// cfg.Simplify = !sqlfmtCtx.NoSimplify
+	// cfg.Align = tree.PrettyNoAlign
+	// if sqlfmtCtx.Align {
+	// 	cfg.Align = tree.PrettyAlignAndDeindent
+	// }
 
-	for i := range sl {
-		fmt.Print(cfg.Pretty(sl[i].AST))
-		if len(sl) > 1 {
-			fmt.Print(";")
-		}
-		fmt.Println()
-	}
-	return nil
+	// for i := range sl {
+	// 	fmt.Print(cfg.Pretty(sl[i].AST))
+	// 	if len(sl) > 1 {
+	// 		fmt.Print(";")
+	// 	}
+	// 	fmt.Println()
+	// }
+	// return nil
 }

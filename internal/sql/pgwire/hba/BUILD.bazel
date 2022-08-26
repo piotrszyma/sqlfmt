@@ -1,0 +1,40 @@
+load("//build/bazelutil/unused_checker:unused.bzl", "get_x_data")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "hba",
+    srcs = [
+        "hba.go",
+        "parser.go",
+        "scanner.go",
+    ],
+    importpath = "github.com/piotrszyma/sqlfmt/internal/sql/pgwire/hba",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/security/username",
+        "//pkg/sql/pgwire/pgcode",
+        "//pkg/sql/pgwire/pgerror",
+        "//pkg/sql/sem/tree",
+        "//pkg/util/errorutil/unimplemented",
+        "@com_github_cockroachdb_errors//:errors",
+        "@com_github_olekukonko_tablewriter//:tablewriter",
+    ],
+)
+
+go_test(
+    name = "hba_test",
+    size = "small",
+    srcs = [
+        "hba_test.go",
+        "scanner_test.go",
+    ],
+    data = glob(["testdata/**"]),
+    embed = [":hba"],
+    deps = [
+        "//pkg/testutils",
+        "@com_github_cockroachdb_datadriven//:datadriven",
+        "@com_github_kr_pretty//:pretty",
+    ],
+)
+
+get_x_data(name = "get_x_data")
