@@ -23,7 +23,6 @@ import (
 	"github.com/cockroachdb/cockroach/pkg/sql/parser"
 	"github.com/cockroachdb/cockroach/pkg/sql/sem/tree"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 )
 
 // TODO(mjibson): This subcommand has more flags than I would prefer. My
@@ -56,7 +55,7 @@ func (s *statementsValue) Set(value string) error {
 
 // sqlfmtCtx captures the command-line parameters of the `sqlfmt` command.
 // Defaults set by InitCLIDefaults() above.
-var sqlfmtCtx struct {
+type SqlfmtCtx struct {
 	len        int
 	useSpaces  bool
 	tabWidth   int
@@ -65,26 +64,7 @@ var sqlfmtCtx struct {
 	execStmts  statementsValue
 }
 
-// NewSqlfmtCmd create and returns the sqlfmt command
-func NewSqlfmtCmd() *cobra.Command {
-	sqlfmtCmd := &cobra.Command{
-		Use:   "sqlfmt",
-		Short: "format SQL statements",
-		Long:  "Formats SQL statements from stdin to line length n.",
-		RunE:  runSQLFmt,
-	}
-
-	cfg := tree.DefaultPrettyCfg()
-	sqlfmtCmd.Flags().IntVar(&sqlfmtCtx.len, "len", cfg.LineWidth, "The line length where sqlfmt will try to wrap.")
-	sqlfmtCmd.Flags().BoolVar(&sqlfmtCtx.useSpaces, "use-spaces", !cfg.UseTabs, "Indent with spaces instead of tabs.")
-	sqlfmtCmd.Flags().IntVar(&sqlfmtCtx.tabWidth, "tab-width", cfg.TabWidth, "Number of spaces per indentation level.")
-	sqlfmtCmd.Flags().BoolVar(&sqlfmtCtx.noSimplify, "no-simplify", !cfg.Simplify, "Don't simplify output.")
-	sqlfmtCmd.Flags().BoolVar(&sqlfmtCtx.align, "align", cfg.Align != tree.PrettyNoAlign, "Align the output.")
-
-	return sqlfmtCmd
-}
-
-func runSQLFmt(cmd *cobra.Command, args []string) error {
+func runSQLFmt(sqlfmtCtx SqlfmtCtx) error {
 	if sqlfmtCtx.len < 1 {
 		return errors.Errorf("line length must be > 0: %d", sqlfmtCtx.len)
 	}
