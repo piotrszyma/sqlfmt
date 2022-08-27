@@ -4,9 +4,11 @@ Goal of this project is to extract `sqlfmt` command from `cockroach` and
 provide CLI interface similar to formatters like `black` or `golangci-lint`.
 
 TODO:
-- [ ] extract parser from `cockroach`
-- [ ] extract pretty printer from `cockroach`
-- [ ] make it buildable using `go build` system instead of `BLAZE`
+- [ ] Figure out a way to run only `sqlfmt`
+- [ ] (maybe) extract parser from `cockroach`
+- [ ] (maybe) extract pretty printer from `cockroach`
+- [ ] (maybe) make it buildable using `go build` system instead of `BLAZE`
+
 
 ## Reformat SQL
 
